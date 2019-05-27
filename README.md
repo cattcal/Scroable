@@ -1,4 +1,8 @@
- ## 引入
+
+## 展示
+![在这里插入图片描述](https://github.com/ailiwean/Scroable/blob/master/img.gif?raw=true)
+ 
+## 引入
  Add it in your root build.gradle at the end of repositories:
 
  	allprojects {
@@ -107,8 +111,7 @@ ScroableView是一个ScrollView,遵循ScrollView写法即可。 这里无非就�
 **ScroTabView样式**
 
 ![在这里插入图片描述](https://github.com/H07000223/FlycoTabLayout/raw/master/preview_3.gif)
-###### XML属性
-## Attributes
+###### Attributes
 
 |name|format|description|
 |:---:|:---:|:---:|
