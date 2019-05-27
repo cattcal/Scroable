@@ -2,9 +2,11 @@ package com.custom.demo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.scroable.ScroableView;
 import com.scroable.ScroTabView;
+import com.scroable.widget.OnTabSelectListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,19 +24,24 @@ public class MainActivity extends AppCompatActivity {
 
         scroTabView = findViewById(R.id.slidingTablayout);
 
+        scroTabView.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                scroableView.scrollToPosition(position);
+
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+            }
+        });
         scroableView.bindTitleView(R.id.title1, R.id.title2, R.id.title3, R.id.title4, R.id.title5, R.id.title6)
-                .registerScrollListener(new ScroableView.ScrollToItemListener() {
-                    @Override
-                    public void scrollToItem(int position, String title) {
-                        scroTabView.setCurrentTab(position);
-                    }
-                })
                 .registerDataCallback(new ScroableView.TitleDataCallback() {
                     @Override
                     public void titlesBack(String[] titles) {
-                        scroTabView.setTabsStr(titles);
                     }
                 })
+                .bindScroTabView(scroTabView)
                 .go();
 
     }

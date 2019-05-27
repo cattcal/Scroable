@@ -235,9 +235,15 @@ public class ScroTabView extends HorizontalScrollView {
             @Override
             public void onClick(View v) {
                 int position = mTabsContainer.indexOfChild(v);
-                if (position != -1) {
-                    if (mListener != null) {
+
+                if (position == mCurrentTab) {
+
+                    if (mListener != null)
                         mListener.onTabReselect(position);
+
+                } else if (position != -1) {
+                    if (mListener != null) {
+                        mListener.onTabSelect(position);
                     }
                     setCurrentTab(position);
                 }

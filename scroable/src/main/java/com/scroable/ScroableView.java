@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.scroable.widget.OnTabSelectListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class ScroableView extends NestedScrollView {
     private List<View> titleView = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
     private FrameLayout rootView;
+    private ScroTabView scroTabView;
 
     public ScroableView(Context context) {
         super(context);
@@ -38,9 +41,9 @@ public class ScroableView extends NestedScrollView {
 
     private int measureHeight;
 
-    ScrollToItemListener scrollToItemListener;
+    List<ScrollToItemListener> scrollToItemListener = new ArrayList<>();
 
-    TitleDataCallback titleDataCallback;
+    List<TitleDataCallback> titleDataCallback = new ArrayList<>();
 
     public ScroableView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -114,31 +117,62 @@ public class ScroableView extends NestedScrollView {
 
             if (t >= titleView.get(i).getY()) {
 
-                if (scrollToItemListener != null)
-                    scrollToItemListener.scrollToItem(i, titles.get(i));
-
+                if (scrollToItemListener.size() != 0) {
+                    for (ScrollToItemListener scroll : scrollToItemListener)
+                        scroll.scrollToItem(i, titles.get(i));
+                }
                 return;
             }
-
         }
-
     }
 
     public ScroableView registerScrollListener(ScrollToItemListener scrollToItemListener) {
-        this.scrollToItemListener = scrollToItemListener;
+        this.scrollToItemListener.add(scrollToItemListener);
         return this;
     }
 
     public ScroableView registerDataCallback(TitleDataCallback titleDataCallback) {
-        this.titleDataCallback = titleDataCallback;
+        this.titleDataCallback.add(titleDataCallback);
         return this;
     }
 
     public void go() {
 
-        if (titleDataCallback != null)
-            titleDataCallback.titlesBack(titles.toArray(new String[]{}));
+        if (titleDataCallback.size() != 0) {
+            for (TitleDataCallback callback : titleDataCallback)
+                callback.titlesBack(titles.toArray(new String[]{}));
+        }
+        if (scroTabView != null) {
+            scroTabView.setTabsStr(titles.toArray(new String[]{}));
+            scroTabView.setOnTabSelectListener(new OnTabSelectListener() {
+                @Override
+                public void onTabSelect(int position) {
+                    scrollToPosition(position);
+                }
 
+                @Override
+                public void onTabReselect(int position) {
+
+                }
+            });
+            registerScrollListener(new ScrollToItemListener() {
+                @Override
+                public void scrollToItem(int position, String title) {
+                    scroTabView.setCurrentTab(position);
+                }
+            });
+
+        }
+
+    }
+
+    public ScroableView bindScroTabView(ScroTabView scroTabView) {
+        this.scroTabView = scroTabView;
+        return this;
+    }
+
+    public ScroTabView getTabView() {
+        return scroTabView;
     }
 
     /***
